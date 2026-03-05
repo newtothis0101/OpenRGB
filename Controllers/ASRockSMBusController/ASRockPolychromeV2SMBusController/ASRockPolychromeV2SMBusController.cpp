@@ -74,7 +74,7 @@ void ASRockPolychromeV2SMBusController::ReadLEDConfiguration()
         zone_led_count[POLYCHROME_V2_ZONE_3]           = asrock_zone_count[2];
         zone_led_count[POLYCHROME_V2_ZONE_4]           = asrock_zone_count[3];
         zone_led_count[POLYCHROME_V2_ZONE_5]           = asrock_zone_count[4];
-        zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE] = asrock_zone_count[5];
+        zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE] = 36;
         LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_1, zone_led_count[POLYCHROME_V2_ZONE_1]);
         LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_2, zone_led_count[POLYCHROME_V2_ZONE_2]);
         LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_3, zone_led_count[POLYCHROME_V2_ZONE_3]);
