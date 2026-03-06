@@ -61,12 +61,10 @@ std::string ASRockPolychromeV2SMBusController::GetFirmwareVersion()
 
 void ASRockPolychromeV2SMBusController::ReadLEDConfiguration()
 {
-    /*---------------------------------------------------------------------------------*\
-    | The LED configuration register holds 6 bytes, so the first read should return 6   |
-    | If not, set all zone sizes to zero                                                |
-    \*---------------------------------------------------------------------------------*/
     LOG_DEBUG("[%s] Reading LED config from controller", device_name.c_str());
     uint8_t asrock_zone_count[I2C_SMBUS_BLOCK_MAX] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+
+    /* Intentamos leer los datos de la placa para las zonas normales */
     if (bus->i2c_smbus_read_block_data(dev, POLYCHROME_V2_REG_LED_CONFIG, asrock_zone_count) == 0x06)
     {
         zone_led_count[POLYCHROME_V2_ZONE_1]           = asrock_zone_count[0];
@@ -74,18 +72,18 @@ void ASRockPolychromeV2SMBusController::ReadLEDConfiguration()
         zone_led_count[POLYCHROME_V2_ZONE_3]           = asrock_zone_count[2];
         zone_led_count[POLYCHROME_V2_ZONE_4]           = asrock_zone_count[3];
         zone_led_count[POLYCHROME_V2_ZONE_5]           = asrock_zone_count[4];
-        zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE] = 36;
-        LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_1, zone_led_count[POLYCHROME_V2_ZONE_1]);
-        LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_2, zone_led_count[POLYCHROME_V2_ZONE_2]);
-        LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_3, zone_led_count[POLYCHROME_V2_ZONE_3]);
-        LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_4, zone_led_count[POLYCHROME_V2_ZONE_4]);
-        LOG_DEBUG(ASROCK_ZONE_LED_COUNT_MESSAGE_EN, device_name.c_str(), POLYCHROME_V2_ZONE_5, zone_led_count[POLYCHROME_V2_ZONE_5]);
-        LOG_DEBUG("[%s] Addressable Zone LED count: %02d", device_name.c_str(), zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE]);
     }
     else
     {
-        LOG_WARNING("[%s] LED config read failed", device_name.c_str());
+        LOG_WARNING("[%s] LED config read failed, setting defaults", device_name.c_str());
         memset(zone_led_count, 0, sizeof(zone_led_count));
+    }
+
+    /* FORZADO MAESTRO: No importa si el 'if' de arriba funcionó o no, 
+       aquí sobreescribimos la zona ARGB con 36 LEDs */
+    zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE] = 36;
+
+    LOG_DEBUG("[%s] Addressable Zone LED count: %02d", device_name.c_str(), zone_led_count[POLYCHROME_V2_ZONE_ADDRESSABLE]);
     }
 }
 
